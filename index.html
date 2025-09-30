@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cấu hình SpamNGL - Shooting Star UI</title>
+    <style>
+        /* -------------------------------------- */
+        /* 1. Global & Setup */
+        /* -------------------------------------- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); /* Nền tối hơn, huyền bí hơn */
+            color: #f0f0f0; /* Chữ sáng */
+            overflow: hidden; /* Quan trọng để sao băng không tạo thanh cuộn */
+        }
+        
+        /* Đặt tất cả nội dung vào một lớp bọc để dễ dàng quản lý Z-index */
+        .wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* -------------------------------------- */
+        /* 2. Keyframe Animation */
+        /* -------------------------------------- */
+        
+        /* Hiệu ứng Sao Băng */
+        @keyframes shooting-star {
+            0% {
+                transform: rotate(315deg) translateX(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(315deg) translateX(-1000px);
+                opacity: 0;
+            }
+        }
+        
+        /* Fade In cho Form */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hiệu ứng nhấp nháy trên input */
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 rgba(255, 255, 255, 0); }
+            50% { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1); }
+            100% { box-shadow: 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        /* -------------------------------------- */
+        /* 3. Shooting Star Element */
+        /* -------------------------------------- */
+        .star {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 1px #fff, 0 0 20px 5px #fff, 0 0 40px 10px #fff;
+            pointer-events: none;
+            z-index: 5;
+            
+            /* Áp dụng animation chính */
+            animation: shooting-star 4s linear infinite;
+        }
+
+        /* Tạo thêm sao băng với độ trễ khác nhau */
+        .star:nth-child(2) {
+            top: 20%;
+            left: 80%;
+            animation-delay: 2s;
+            animation-duration: 5s;
+        }
+
+        .star:nth-child(3) {
+            top: 50%;
+            left: 10%;
+            animation-delay: 1s;
+            animation-duration: 3s;
+        }
+
+        /* -------------------------------------- */
+        /* 4. Container & Form Styling */
+        /* -------------------------------------- */
+        .container {
+            background: rgba(44, 83, 100, 0.9); /* Nền mờ hơn cho form */
+            backdrop-filter: blur(10px); /* Hiệu ứng kính mờ */
+            padding: 35px 45px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 480px;
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Viền sáng mỏng */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5); /* Đổ bóng mạnh */
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .container:hover {
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            transform: translateY(-8px);
+        }
+
+        h2 {
+            text-align: center;
+            color: #64ffda; /* Màu neon xanh mint */
+            margin-bottom: 35px;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(100, 255, 218, 0.5); /* Hiệu ứng phát sáng */
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #d1d1d1;
+            font-size: 1em;
+        }
+
+        /* -------------------------------------- */
+        /* 5. Input Styling */
+        /* -------------------------------------- */
+        input[type="text"], 
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 22px;
+            border: 1px solid #64ffda; /* Viền màu neon */
+            border-radius: 10px;
+            box-sizing: border-box;
+            background-color: rgba(0, 0, 0, 0.2); /* Nền tối mờ */
+            color: #fff;
+            transition: all 0.2s ease-in-out;
+            animation: pulse-border 2s infinite alternate;
+        }
+
+        input[type="text"]:focus, 
+        input[type="number"]:focus {
+            border-color: #64ffda;
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.8);
+            background-color: rgba(0, 0, 0, 0.5);
+            outline: none;
+            animation: none;
+        }
+        
+        /* Gợi ý nhỏ */
+        .hint {
+            display: block;
+            font-size: 0.8em;
+            color: #ff9800; /* Màu cam nổi bật cho gợi ý quan trọng */
+            margin-top: -15px;
+            margin-bottom: 25px;
+            padding-left: 5px;
+        }
+
+        /* -------------------------------------- */
+        /* 6. Toggle Switch (Bật/Tắt Emoji) */
+        /* -------------------------------------- */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Căn giữa nội dung và switch */
+            margin-bottom: 30px;
+            padding: 10px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #64ffda;
+            box-shadow: 0 0 10px rgba(100, 255, 218, 0.7); /* Thêm phát sáng khi bật */
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #64ffda;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* -------------------------------------- */
+        /* 7. Button Styling */
+        /* -------------------------------------- */
+        button[type="submit"] {
+            width: 100%;
+            background: linear-gradient(90deg, #64ffda, #00d4ff); /* Gradient neon */
+            color: #0f2027; /* Chữ tối trên nền sáng */
+            padding: 14px 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.15em;
+            font-weight: 800;
+            letter-spacing: 1px;
+            
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 5px 20px rgba(100, 255, 218, 0.6);
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, #00d4ff, #64ffda);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.8);
+        }
+        
+        button[type="submit"]:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            background: #64ffda;
+        }
+    </style>
+</head>
+<body>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    
+    <div class="wrapper">
+        <div class="container">
+            <h2>CẤU HÌNH SPAMNGL - CYBER MODE ✨</h2>
+            <form method="POST" action="/">
+                <label for="username">👤 Username Ngl.Link:</label>
+                <input type="text" id="username" name="username" placeholder="Nhập username Ngl.Link của mục tiêu" required>
+
+                <label for="message">✉️ Tin nhắn cần gửi:</label>
+                <input type="text" id="message" name="message" placeholder="Ví dụ: Bạn có khoẻ không? (Tối đa 150 ký tự)" required>
+
+                <div class="toggle-container">
+                    <label>✨ Bật emoji ngẫu nhiên:</label>
+                    <label class="switch">
+                        <input type="checkbox" id="emoji" name="emoji" value="y" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <label for="total">🔢 Tổng số tin nhắn:</label>
+                <input type="number" id="total" name="total" value="10" min="1" placeholder="Số lượng tin nhắn muốn gửi (Tối thiểu 1)">
+
+                <label for="threads">⚙️ Số luồng đồng thời:</label>
+                <input type="number" id="threads" name="threads" value="1" min="1" placeholder="Nên để thấp để spam hiệu quả">
+                <span class="hint">⚠️ Gợi ý: Số luồng càng ít (nên để 1000< và >500), spam càng **nhanh và ổn định**!</span>
+
+                <button type="submit">KÍCH HOẠT CHẾ ĐỘ SPAM ▶️</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpamNGL đang chạy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Thiết lập chung */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f9; /* Màu nền nhẹ nhàng */
+            color: #333;
+            display: flex;
+            justify-content: center; /* Căn giữa theo chiều ngang */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Container chính cho giao diện */
+        .countdown-container {
+            background-color: #ffffff; /* Nền trắng cho nội dung */
+            padding: 40px 50px;
+            border-radius: 15px; /* Bo góc mềm mại */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng tinh tế */
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+            transition: all 0.3s ease;
+        }
+
+        /* Tiêu đề chính */
+        h2 {
+            color: #1e88e5; /* Màu xanh dương chuyên nghiệp */
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-size: 1.8em;
+        }
+
+        /* Mô tả */
+        .description {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1em;
+        }
+
+        /* Hiển thị số đếm ngược */
+        #count-wrapper {
+            margin: 30px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .label {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        #count {
+            font-family: 'Orbitron', sans-serif; /* Phông chữ công nghệ/digital */
+            font-size: 4.5em; /* Kích thước lớn */
+            font-weight: 700;
+            color: #e53935; /* Màu đỏ nổi bật */
+            display: inline-block;
+            padding: 0 15px;
+            border-radius: 8px;
+            transition: color 0.5s ease;
+        }
+
+        /* Trạng thái */
+        #status {
+            margin-top: 30px;
+            font-size: 1.1em;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            color: #ffffff;
+            background-color: #4caf50; /* Màu xanh lá cho trạng thái đang chạy */
+            transition: background-color 0.5s ease;
+        }
+        
+        /* Trạng thái khi dừng */
+        .stopped {
+            background-color: #757575 !important; /* Màu xám khi dừng */
+            color: #ffffff !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .countdown-container {
+                padding: 30px;
+            }
+            #count {
+                font-size: 3.5em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="countdown-container">
+        <h2>SpamNGL Đang Khởi Chạy</h2>
+        <p class="description">Chờ trong {{ seconds }} giây để quá trình hoàn tất!</p>
+
+        <div id="count-wrapper">
+            <div class="label">Thời gian còn lại:</div>
+            <h3><span id="count">{{ seconds }}</span></h3>
+            <div class="label">giây</div>
+        </div>
+
+        <p id="status">⏳ Đang chạy...</p>
+    </div>
+
+    <script>
+        // Lấy giá trị seconds từ backend (ví dụ: Flask/Jinja)
+        let timeLeft = {{ seconds }};
+        const countDisplay = document.getElementById("count");
+        const statusDisplay = document.getElementById("status");
+        
+        function startCountdown() {
+            // Hiển thị số giây ban đầu ngay lập tức
+            countDisplay.innerHTML = timeLeft;
+            
+            let timer = setInterval(function() {
+                timeLeft -= 1;
+                countDisplay.innerHTML = timeLeft;
+
+                // Thay đổi màu chữ khi còn ít thời gian
+                if (timeLeft <= 10 && timeLeft > 0) {
+                    countDisplay.style.color = '#ff9800'; // Màu cam
+                } else if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    countDisplay.innerHTML = '0';
+                    statusDisplay.innerHTML = "⏹ Đã dừng spamngl.py";
+                    statusDisplay.classList.add('stopped'); // Thêm class cho trạng thái dừng
+                    countDisplay.style.color = '#757575'; // Màu xám khi dừng
+                    
+                    // Tự động quay về index.html sau 2 giây
+                    setTimeout(function() {
+                        window.location.href = "/";
+                    }, 2000);
+                }
+            }, 1000);
+        }
+        
+        window.onload = startCountdown;
+    </script>
+</body>
+</html>
