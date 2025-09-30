@@ -295,5 +295,21 @@
         </div>
     </div>
 </body>
+<script>
+document.querySelector("form").addEventListener("submit", function(e) {
+    let total = document.getElementById("total").value;
+    let threads = document.getElementById("threads").value;
+
+    if (total < 1000) {
+        alert("⚠️ Tổng số tin nhắn phải từ 1000 trở lên!");
+        e.preventDefault();
+    }
+    if (threads < 100) {
+        alert("⚠️ Số luồng đồng thời phải từ 100 trở lên!");
+        e.preventDefault();
+    }
+});
+</script>
 
 </html>
+
